@@ -1,6 +1,7 @@
 # KATA Online Bookstore Documentation
 
 Back-end Github repository URL: https://github.com/AndrewArnitaCap/bookstore-backend/tree/master
+Base URL: http://localhost:8080/api
 
 # Dependencies Used
 - **Spring Boot DevTools Developer Tools:**
@@ -16,3 +17,7 @@ Back-end Github repository URL: https://github.com/AndrewArnitaCap/bookstore-bac
     Simplifies Java code by generating boilerplate code like getters, setters, and constructors (like` @Data, @Getter, @Setter`...)
 - **Spring Security**:
   Framework that provides both authentication and authorization to Java applications, which will be used for the basic authentication logic
+
+## Accessing the H2 DB:
+- URL: http://localhost:8080/api/h2-console
+- 
