@@ -7,6 +7,9 @@ import com.capgemini.bookstore_backend.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * Actual implementation of BookService
  * Provide the business logic for handling book related operations
@@ -44,5 +47,25 @@ public class BookServiceImpl implements BookService {
             // Handle the exception
             throw new RuntimeException("Error creating book", e);
         }
+    }
+
+    /**
+     * using Jpa repo .findAll() method
+     * I can retrieve all the books and store them in a List of Books
+     * finaAll() returns a List of Book and not BookDto
+     * to prevent exposing all the entity, it streams across the list
+     * and maps the Book to BookDto
+     * .stream() converts a collection into a stream
+     * .collect() converts the stream back to a collection
+     * Collectors collects the elements of the stream into a List
+     * @return list of BookDto
+     */
+
+    @Override
+    public List<BookDto> getAllBooks() {
+        List<Book> books = bookRepository.findAll();
+        return books.stream()
+                .map(BookMapper.INSTANCE::mapBookToBookDto)
+                .collect(Collectors.toList());
     }
 }

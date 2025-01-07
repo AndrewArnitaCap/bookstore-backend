@@ -5,10 +5,9 @@ import com.capgemini.bookstore_backend.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * REST controller for managing Book entities
@@ -31,12 +30,25 @@ public class BookController {
 
     /**
      * POST operation to create a book and save it in the DB
+     * By returning a DTO I keep my entity data separate from what I expose through the API
      * @param bookDto the actual book entity gotten from the request body
-     * @return the saved book entity that was added with a 401 CREATED status
+     * @return the saved book that was added with a 401 CREATED status
      */
     @PostMapping
     public ResponseEntity<BookDto> addBook(@RequestBody BookDto bookDto) {
         BookDto savedBook = bookService.addBook(bookDto);
         return new ResponseEntity<>(savedBook, HttpStatus.CREATED);
+    }
+
+    /**
+     * GET operation to get all the books found in the DB
+     * By returning a List of BookDTO I keep my entity data separate from what I expose through the API
+     * @return all books entity that was added with a 200 Success status
+     */
+
+    @GetMapping
+    public ResponseEntity<List<BookDto>> getAllBooks() {
+        List<BookDto> allBooks = bookService.getAllBooks();
+        return new ResponseEntity<>(allBooks, HttpStatus.OK);
     }
 }
