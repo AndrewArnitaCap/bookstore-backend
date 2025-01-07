@@ -66,4 +66,18 @@ public class BookControllerTest {
                 )
                 .andExpect(MockMvcResultMatchers.status().isCreated());
     }
+
+    /**
+     * test case to check if all the books in the DB are returned
+     * and get as response isOk status
+     * if any error occurs it
+     * @throws Exception
+     */
+
+    @Test
+    void shouldReturnAllBooksTest() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/books"))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+    }
+
 }
