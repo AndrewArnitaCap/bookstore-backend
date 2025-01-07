@@ -1,0 +1,139 @@
+openapi: 3.0.3
+
+info:
+  title: Online Bookstore
+  description: |-
+    Creating an RESTful API contract for the KATA Online Bookstore Spring Boot application to handle book-related 
+    operations.
+
+  version: '1.0.0'
+  contact:
+    email: andrew.arnita@capgemini.com
+
+servers:
+  - url: http://localhost:8080/api/
+    description: local server
+
+tags:
+  - name: book
+    description: api end-points related to book operations
+  - name: cart
+    description: api end-points related to the online bookstore cart 
+
+paths:
+  /books:
+    post:
+      tags:
+        - book
+      summary: Add a new book
+      operationId: addBook
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Book'
+      responses:
+        '201':
+          description: Book was successfully created
+        '409':
+         description: Error, a conflict has occurred
+    
+    get:
+      tags:
+        - book
+      summary: List all books
+      operationId: getAllBooks
+      responses:
+        '200':
+          description: A list of books
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Book'
+        '400':
+          description: Error, Bad request
+        '404':
+          description: No books were found
+  /books/{bookId}:
+    get:
+      tags:
+        - book
+      summary: Retrieve a book by ID
+      operationId: getBookById
+      parameters:
+        - name: bookId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful retrieval of book information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+        '400':
+           description: Error, Bad request
+        '404':
+          description: Book not found
+    put:
+      tags:
+        - book
+      summary: Update a book by ID
+      operationId: updateBookById
+      parameters:
+        - name: bookId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Book'
+      responses:
+        '200':
+          description: Book has been successfully updated
+        '404':
+          description: Book not found
+    delete:
+      tags:
+        - book
+      summary: Delete a book by ID
+      operationId: deleteBookById
+      parameters:
+        - name: bookId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Book has been successfully deleted
+        '404':
+          description: Book not found
+components:
+  schemas:
+    Book:
+      type: object
+      description: Book Information
+      properties:
+        bookId:
+          type: string
+        title:
+          type: string
+        author:
+          type: string
+        price:
+          type: number
+          format: float
+      required:
+        - title
+        - author
+        - price
