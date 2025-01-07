@@ -68,7 +68,8 @@ paths:
           in: path
           required: true
           schema:
-            type: string
+            type: integer
+            format: int64
       responses:
         '200':
           description: Successful retrieval of book information
@@ -90,7 +91,8 @@ paths:
           in: path
           required: true
           schema:
-            type: string
+            type: integer
+            format: int64
       requestBody:
         required: true
         content:
@@ -112,7 +114,8 @@ paths:
           in: path
           required: true
           schema:
-            type: string
+            type: integer
+            format: int64
       responses:
         '204':
           description: Book has been successfully deleted
@@ -124,8 +127,8 @@ components:
       type: object
       description: Book Information
       properties:
-        bookId:
-          type: string
+        type: integer
+        format: int64
         title:
           type: string
         author:

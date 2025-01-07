@@ -1,4 +1,14 @@
 package com.capgemini.bookstore_backend.repository;
 
-public class BookRepository {
+import com.capgemini.bookstore_backend.model.Book;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+/**
+ * Repository interface for Book entity.
+ * Provides CRUD operations and custom query methods through JpaRepository
+ */
+
+@Repository // Indicates that this interface is a Spring Data repository
+public interface BookRepository extends JpaRepository<Book, Long> {
 }
