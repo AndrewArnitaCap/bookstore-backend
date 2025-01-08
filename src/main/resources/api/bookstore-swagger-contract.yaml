@@ -6,7 +6,7 @@ info:
     Creating an RESTful API contract for the KATA Online Bookstore Spring Boot application to handle book-related 
     operations.
 
-  version: '1.0.0'
+  version: '1.0.1'
   contact:
     email: andrew.arnita@capgemini.com
 
@@ -36,9 +36,8 @@ paths:
       responses:
         '201':
           description: Book was successfully created
-        '409':
-         description: Error, a conflict has occurred
-    
+        '400':
+         description: Error, Bad request
     get:
       tags:
         - book
@@ -62,7 +61,7 @@ paths:
       tags:
         - book
       summary: Retrieve a book by ID
-      operationId: getBookById
+      operationId: findBookById
       parameters:
         - name: bookId
           in: path
