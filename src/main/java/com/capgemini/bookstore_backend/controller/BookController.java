@@ -2,6 +2,7 @@ package com.capgemini.bookstore_backend.controller;
 
 import com.capgemini.bookstore_backend.dto.BookDto;
 import com.capgemini.bookstore_backend.service.BookService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +36,7 @@ public class BookController {
      * @return the saved book that was added with a 401 CREATED status
      */
     @PostMapping
-    public ResponseEntity<BookDto> addBook(@RequestBody BookDto bookDto) {
+    public ResponseEntity<BookDto> addBook(@Valid @RequestBody BookDto bookDto) {
         BookDto newBook = bookService.addBook(bookDto);
         return new ResponseEntity<>(newBook, HttpStatus.CREATED);
     }
