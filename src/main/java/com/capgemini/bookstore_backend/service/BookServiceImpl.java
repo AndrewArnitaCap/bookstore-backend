@@ -2,6 +2,7 @@ package com.capgemini.bookstore_backend.service;
 
 import com.capgemini.bookstore_backend.Mapper.BookMapper;
 import com.capgemini.bookstore_backend.dto.BookDto;
+import com.capgemini.bookstore_backend.exception.BookNotFoundException;
 import com.capgemini.bookstore_backend.model.Book;
 import com.capgemini.bookstore_backend.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,7 +87,7 @@ public class BookServiceImpl implements BookService {
     public BookDto findBookById(Long bookId) {
         Book book = bookRepository
                 .findById(bookId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Book with this ID doesn't exist!"));
+                .orElseThrow(() -> new BookNotFoundException("GET request failed because Book with ID: " + bookId + " doesn't exist."));
         return BookMapper.INSTANCE.mapBookToBookDto(book);
     }
 
@@ -105,7 +106,7 @@ public class BookServiceImpl implements BookService {
                 .ifPresentOrElse(
                         bookRepository::delete,
                         () ->  {
-                            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Book with this ID doesn't exist!");
+                            throw new BookNotFoundException("DELETE request failed because Book with ID: " + bookId + " doesn't exist.");
                         }
                 );
     }
@@ -123,7 +124,7 @@ public class BookServiceImpl implements BookService {
     public BookDto updateBookById(BookDto bookDto, Long bookId) {
         Book book = bookRepository
                 .findById(bookId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Book with this ID doesn't exist!"));
+                .orElseThrow(() -> new BookNotFoundException("PUT request failed because Book with ID: " + bookId + " doesn't exist."));
 
         book.setTitle(bookDto.getTitle());
         book.setAuthor(bookDto.getAuthor());
