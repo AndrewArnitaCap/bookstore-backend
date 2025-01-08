@@ -24,13 +24,10 @@ public class BookServiceImpl implements BookService {
      * and that bookRepository is never going to be changed
      */
     private final BookRepository bookRepository;
-    private final BookMapper bookMapper;
 
     @Autowired
-    public BookServiceImpl(BookRepository bookRepository,
-                           BookMapper bookMapper) {
+    public BookServiceImpl(BookRepository bookRepository) {
         this.bookRepository = bookRepository;
-        this.bookMapper = bookMapper;
     }
 
     /**
@@ -91,5 +88,25 @@ public class BookServiceImpl implements BookService {
                 .findById(bookId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Book with this ID doesn't exist!"));
         return BookMapper.INSTANCE.mapBookToBookDto(book);
+    }
+
+    /**
+     * based on a bookId provided, check if the book is present
+     * then delete it from the DB
+     * else throw exception letting the user know that this book
+     * with this id is not found in the DB
+     * :: called method reference, special type of lambda expressions
+     * is same as (book -> bookRepository.delete(book))
+     * @param bookId id of the book trying to find
+     */
+    @Override
+    public void deleteBookById(Long bookId){
+        bookRepository.findById(bookId)
+                .ifPresentOrElse(
+                        bookRepository::delete,
+                        () ->  {
+                            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Book with this ID doesn't exist!");
+                        }
+                );
     }
 }

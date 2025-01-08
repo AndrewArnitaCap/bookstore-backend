@@ -127,7 +127,8 @@ public class BookControllerTest {
      */
     @Test
     void shouldDeleteBookByIdTest() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.delete("/books/{bookId}", 1))
-                .andExpect(MockMvcResultMatchers.status().isAccepted());
+        when(bookService.findBookById(1L)).thenReturn(null);
+        mockMvc.perform(MockMvcRequestBuilders.delete("/books/{bookId}", 1L))
+                .andExpect(MockMvcResultMatchers.status().isOk());
     }
 }

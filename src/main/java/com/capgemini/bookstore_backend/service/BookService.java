@@ -29,4 +29,10 @@ public interface BookService {
      * @return BookDto when found
      */
     BookDto findBookById(Long bookId);
+
+    /**
+     * Delete a book by its ID from the DB
+     * @param bookId id of the book trying to find
+     */
+    void deleteBookById(Long bookId);
 }
