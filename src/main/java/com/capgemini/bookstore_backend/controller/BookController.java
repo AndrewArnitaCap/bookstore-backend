@@ -51,4 +51,15 @@ public class BookController {
         List<BookDto> allBooks = bookService.getAllBooks();
         return new ResponseEntity<>(allBooks, HttpStatus.OK);
     }
+
+    /**
+     * GET operation to get a books based on its ID if found in the DB
+     * By returning BookDTO I keep my entity data separate from what I expose through the API
+     * @return book that was found with a 200 Success status
+     */
+    @GetMapping("{bookId}")
+    public ResponseEntity<BookDto> findBookById(@PathVariable("bookId") Long bookId) {
+        BookDto book = bookService.findBookById(bookId);
+        return new ResponseEntity<>(book, HttpStatus.OK);
+    }
 }

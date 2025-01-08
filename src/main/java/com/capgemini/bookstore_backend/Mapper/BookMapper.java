@@ -13,8 +13,23 @@ import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring")
 public interface BookMapper {
+    /**
+     * call to the getMapper method of the Mappers class
+     * it's a method call that returns an instance of the BookMapper interface
+     */
     BookMapper INSTANCE = Mappers.getMapper(BookMapper.class);
 
+    /**
+     * maps Book entity to BookDto
+     * @param book
+     * @return BookDto
+     */
     BookDto mapBookToBookDto(Book book);
+
+    /**
+     * maps BookDto to Book entity
+     * @param bookDto
+     * @return Book entity
+     */
     Book mapBookDtoToBook(BookDto bookDto);
 }

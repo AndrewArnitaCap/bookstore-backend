@@ -22,4 +22,11 @@ public interface BookService {
      * @return list of bookDto
      */
     List<BookDto> getAllBooks();
+
+    /**
+     * Get a book by its ID from the DB
+     * @param bookId id of the book trying to find
+     * @return BookDto when found
+     */
+    BookDto findBookById(Long bookId);
 }

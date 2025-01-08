@@ -5,9 +5,12 @@ import com.capgemini.bookstore_backend.dto.BookDto;
 import com.capgemini.bookstore_backend.model.Book;
 import com.capgemini.bookstore_backend.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -21,10 +24,13 @@ public class BookServiceImpl implements BookService {
      * and that bookRepository is never going to be changed
      */
     private final BookRepository bookRepository;
+    private final BookMapper bookMapper;
 
     @Autowired
-    public BookServiceImpl(BookRepository bookRepository) {
+    public BookServiceImpl(BookRepository bookRepository,
+                           BookMapper bookMapper) {
         this.bookRepository = bookRepository;
+        this.bookMapper = bookMapper;
     }
 
     /**
@@ -67,5 +73,23 @@ public class BookServiceImpl implements BookService {
         return books.stream()
                 .map(BookMapper.INSTANCE::mapBookToBookDto)
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * based on a bookId provided, check if the book is present
+     * return it
+     * otherwise throw exception letting the user know that this book
+     * with this id is not found in the DB
+     * N.B: Optional<Book> could be used if not books were found but then
+     * I need to add the param type of the method mapBookToBookDto as Optional as well
+     * @param bookId id of the book trying to find
+     * @return BookDto for the book that was found
+     */
+    @Override
+    public BookDto findBookById(Long bookId) {
+        Book book = bookRepository
+                .findById(bookId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Book with this ID doesn't exist!"));
+        return BookMapper.INSTANCE.mapBookToBookDto(book);
     }
 }
