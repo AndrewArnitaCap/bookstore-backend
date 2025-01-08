@@ -36,8 +36,8 @@ public class BookController {
      */
     @PostMapping
     public ResponseEntity<BookDto> addBook(@RequestBody BookDto bookDto) {
-        BookDto savedBook = bookService.addBook(bookDto);
-        return new ResponseEntity<>(savedBook, HttpStatus.CREATED);
+        BookDto newBook = bookService.addBook(bookDto);
+        return new ResponseEntity<>(newBook, HttpStatus.CREATED);
     }
 
     /**
@@ -64,13 +64,24 @@ public class BookController {
     }
 
     /**
-     * GET operation to get a books based on its ID if found in the DB
-     * By returning BookDTO I keep my entity data separate from what I expose through the API
-     * @return book that was found with a 200 Success status
+     * DELETE operation to delete a book based on its ID if found in the DB
+     * throws an exception if the book to be deleted was not found
+     * @return status OK of everything went fine anything
      */
     @DeleteMapping("{bookId}")
     public ResponseEntity<HttpStatus> deleteBookById(@PathVariable("bookId") Long bookId) {
         bookService.deleteBookById(bookId);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    /**
+     * PUT operation to update a book based on its ID if found in the DB
+     * same as above, so by returning BookDTO I keep my entity data separate from what I expose through the API
+     * @return book that was found with a 200 Success status
+     */
+    @PutMapping("{bookId}")
+    public ResponseEntity<BookDto> updateBookById(@RequestBody BookDto bookDto, @PathVariable("bookId") Long bookId) {
+        BookDto updatedBook = bookService.updateBookById(bookDto, bookId);
+        return new ResponseEntity<>(updatedBook, HttpStatus.OK);
     }
 }

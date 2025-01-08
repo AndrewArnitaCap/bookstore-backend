@@ -35,4 +35,13 @@ public interface BookService {
      * @param bookId id of the book trying to find
      */
     void deleteBookById(Long bookId);
+
+    /**
+     * Get a book by its ID from the DB
+     * Updates its price value if found
+     * @param bookDto of the book I'm trying to update
+     * @param bookId of the book
+     * @return BookDto when found
+     */
+    BookDto updateBookById(BookDto bookDto, Long bookId);
 }

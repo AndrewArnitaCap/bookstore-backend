@@ -1,14 +1,12 @@
 package com.capgemini.bookstore_backend.controller;
 
 import com.capgemini.bookstore_backend.dto.BookDto;
-import com.capgemini.bookstore_backend.model.Book;
 import com.capgemini.bookstore_backend.service.BookService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -17,10 +15,15 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
- * TDD case for Book controller
+ * Tests for Book controller
+ * these unit tests are focused on the controller
+ * So the real services and database are not involved, so no actual operations happen
  * SpringBootTest is not used here
  * because it adds a lot of configurations that I don't need
  * it ends up loading the entire app context which makes test slow
@@ -73,7 +76,7 @@ public class BookControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                     )
-                    .andExpect(MockMvcResultMatchers.status().isCreated());
+                    .andExpect(status().isCreated());
     }
 
     /**
@@ -95,7 +98,7 @@ public class BookControllerTest {
         when(bookService.getAllBooks()).thenReturn(bookDtoList);
         mockMvc.perform(MockMvcRequestBuilders.get("/books")
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].title").value("Think and Grow Rich"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[1].price").value(124F));
     }
@@ -119,7 +122,7 @@ public class BookControllerTest {
         when(bookService.findBookById(1L)).thenReturn(bookDto);
         mockMvc.perform(MockMvcRequestBuilders.get("/books/{bookId}", 1)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("Think and Grow Rich"));
     }
 
@@ -134,7 +137,7 @@ public class BookControllerTest {
     void shouldDeleteBookByIdTest() throws Exception {
         when(bookService.findBookById(1L)).thenReturn(null);
         mockMvc.perform(MockMvcRequestBuilders.delete("/books/{bookId}", 1L))
-                .andExpect(MockMvcResultMatchers.status().isOk());
+                .andExpect(status().isOk());
     }
 
     /**
@@ -148,12 +151,18 @@ public class BookControllerTest {
      */
     @Test
     void shouldUpdateBookByIdTest() throws Exception {
+        // Simulates the behavior of the bookService.updateBookById() method without actually calling the real implementation
+        // any() is used to generalize the input to the mock service
+        // when()  prevents the test from being dependent on the service logic
+        when(bookService.updateBookById(any(BookDto.class), eq(2L))).thenReturn(
+                new BookDto(2L, "Think and Grow Rich", "Napoleon Hill", 89F)
+        );
         mockMvc.perform( MockMvcRequestBuilders
-                        .put("/bookId/{id}", 2)
+                        .put("/books/{id}", 2L)
                         .content("{\"title\": \"Think and Grow Rich\", \"author\": \"Napoleon Hill\", \"price\": 89.0}")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.price").value(98F));
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.author").value("Napoleon Hill"));
     }
 }

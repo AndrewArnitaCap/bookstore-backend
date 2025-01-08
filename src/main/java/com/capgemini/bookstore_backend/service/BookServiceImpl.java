@@ -109,4 +109,28 @@ public class BookServiceImpl implements BookService {
                         }
                 );
     }
+
+
+    /**
+     * I want to send through the request body the book with its updated fields
+     * I am checking if the book is found
+     * then setting the attributes one by one after getting them from the payload
+     * @param bookDto of the book I'm trying to update
+     * @param bookId of the book
+     * @return bookDto of the book that has been updated
+     */
+    @Override
+    public BookDto updateBookById(BookDto bookDto, Long bookId) {
+        Book book = bookRepository
+                .findById(bookId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Book with this ID doesn't exist!"));
+
+        book.setTitle(bookDto.getTitle());
+        book.setAuthor(bookDto.getAuthor());
+        book.setPrice(bookDto.getPrice());
+
+        bookRepository.save(book);
+
+        return BookMapper.INSTANCE.mapBookToBookDto(book);
+    }
 }
