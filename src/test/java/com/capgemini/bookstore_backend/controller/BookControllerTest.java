@@ -1,12 +1,14 @@
 package com.capgemini.bookstore_backend.controller;
 
 import com.capgemini.bookstore_backend.dto.BookDto;
+import com.capgemini.bookstore_backend.model.Book;
 import com.capgemini.bookstore_backend.service.BookService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -67,16 +69,17 @@ public class BookControllerTest {
     @Test
     void shouldCreateBookTest() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/books")
+                        .content("{\"title\": \"Think and Grow Rich\", \"author\": \"Napoleon Hill\", \"price\": 89.0}")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"title\": \"Sample Book\", \"author\": \"Author Name\", \"price\": 89.0}")
-                )
-                .andExpect(MockMvcResultMatchers.status().isCreated());
+                        .accept(MediaType.APPLICATION_JSON)
+                    )
+                    .andExpect(MockMvcResultMatchers.status().isCreated());
     }
 
     /**
      * test case to check if all the books in the DB are returned
      * and get as response isOk status
-     * By creating a list of books and initializing values
+     * By creating a list of books and initializing their values
      * and returning the list
      * once the GET request is called, check for the returned values if they match
      * the test criteria defined
@@ -90,7 +93,8 @@ public class BookControllerTest {
         bookDtoList.add(new BookDto(1L, "Think and Grow Rich", "Napoleon Hill", 90F));
         bookDtoList.add(new BookDto(2L, "Harry Potter", "J.K. Rowling", 124F));
         when(bookService.getAllBooks()).thenReturn(bookDtoList);
-        mockMvc.perform(MockMvcRequestBuilders.get("/books"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/books")
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].title").value("Think and Grow Rich"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[1].price").value(124F));
@@ -113,7 +117,8 @@ public class BookControllerTest {
         bookDto.setBookId(1L);
         bookDto.setTitle("Think and Grow Rich");
         when(bookService.findBookById(1L)).thenReturn(bookDto);
-        mockMvc.perform(MockMvcRequestBuilders.get("/books/{bookId}", 1))
+        mockMvc.perform(MockMvcRequestBuilders.get("/books/{bookId}", 1)
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("Think and Grow Rich"));
     }
@@ -130,5 +135,25 @@ public class BookControllerTest {
         when(bookService.findBookById(1L)).thenReturn(null);
         mockMvc.perform(MockMvcRequestBuilders.delete("/books/{bookId}", 1L))
                 .andExpect(MockMvcResultMatchers.status().isOk());
+    }
+
+    /**
+     * test case to update a book price
+     * by creating a mock book with values
+     * then changing the price of it to another value
+     * Based on its ID
+     * and get as response isOk status which indicates that it was updated
+     * if any error occurs it
+     * @throws Exception
+     */
+    @Test
+    void shouldUpdateBookByIdTest() throws Exception {
+        mockMvc.perform( MockMvcRequestBuilders
+                        .put("/bookId/{id}", 2)
+                        .content("{\"title\": \"Think and Grow Rich\", \"author\": \"Napoleon Hill\", \"price\": 89.0}")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.price").value(98F));
     }
 }
