@@ -80,4 +80,16 @@ public class BookControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
+    /**
+     * test case to check if a book exists and retrieve from the DB
+     * and get as response isOk status
+     * if any error occurs it
+     * @throws Exception
+     */
+    @Test
+    void shouldReturnBookByIdTest() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/books/{bookId}", 1))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.bookId").value(1));
+    }
 }
