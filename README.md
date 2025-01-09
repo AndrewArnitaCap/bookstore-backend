@@ -8,6 +8,12 @@ Base URL: http://localhost:8080/api
 - Using Maven plugin in IntelliJ command line: mvn spring-boot:run
 - Using IntelliJ run button on the top right, make sure you select BookstoreBackendApplication java class:
   - then click on the green play button
+1. Make sure you all the project's dependencies are resolved: `mvn dependency:resolve`
+2. Make sure the `lombok` plugin is installed on your IDE (IntelliJ in my case) if not then install it from the marketplace and restart your IDE
+3. After that small, a popup on the bottom right will appear asking you enable lombok annotations (click on it), otherwise follow these steps to do so:
+- File -> Settings -> Expand Build, Execution, Deployment -> Expand Compiler -> Annotation Processors:
+  - check `Enable annotation processing` and click Apply
+  - restart IDE if needed
 
 ## Authentication using Basic Authentication:
 - Basic Authentication is a method of securing HTTP requests through a special header: "Authorization: Basic 'credentials'"
@@ -95,6 +101,7 @@ you can change the title, author and price of a book by respecting the validatio
 - JDBC URL: jdbc:h2:mem:bookstoredb
 - User Name: sa
 - Password: super
+
 
 ## Some issues encountered:
 - Using both Lombok and Mapstruct caused null issues in my BookDto so after a long search I found that Lombok needs to be in the top of the dependency list (and before mapstruct as well)  
