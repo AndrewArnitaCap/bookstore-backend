@@ -15,5 +15,5 @@ import java.util.Optional;
 
 @Repository // Indicates that this interface is a Spring Data repository
 public interface UserRepository extends JpaRepository<TheUser, Long> {
-    Optional<TheUser> findByUsername(String username);
+    Optional<TheUser> findByUsername(String username); //gets the user from the DB and returns a TheUser object
 }
