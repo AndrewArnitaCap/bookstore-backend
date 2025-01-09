@@ -15,6 +15,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Implementing security configurations to secure my app, back-end, and API endpoints
@@ -37,6 +43,26 @@ public class SecurityConfig {
     }
 
     /**
+     * Inspired from this article: https://medium.com/@tuananhbk1996/cors-with-spring-security-6-6b765f23ca5f
+     * This method defines a CORS configuration to handle cross-origin requests
+     * this will help me do api calls from the front-end
+     * where it creates a `CorsConfiguration` object to specify the allowed origins and methods
+     * UrlBasedCorsConfigurationSource` to register this configuration for the endpoints
+     * @return CorsConfigurationSource hat Spring Security will use to manage cross-origin requests
+     */
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of("http://localhost:3000"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
+        configuration.setAllowCredentials(true);
+        configuration.addAllowedHeader("*");
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
+
+    /**
      * sequence of filters that Spring Security applies to incoming HTTP requests
      * some of the filters are:
      * Authentication to handle user authentication
@@ -52,6 +78,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .headers(h -> h.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)) // used to fix the H2-console not loading in the browser
+                .cors(Customizer.withDefaults()) // let spring security use the CORS configuration implemented above
                 .csrf(AbstractHttpConfigurer::disable) // disabling cross site request forgery, to keep the security config simple
                 .authorizeHttpRequests(request -> { // "The pattern must not contain the context path" so no need to add the base route /api
                     request.requestMatchers("/register/**").permitAll(); // give access to the /register directory and what comes after it "/**" to register a new user
@@ -63,6 +90,8 @@ public class SecurityConfig {
     }
 
     /**
+     * Inspired by: https://www.kindsonthegenius.com/how-to-authenticate-from-react-to-spring-boot/
+     * and https://www.youtube.com/watch?v=h9LJd09tOks
      * In a way, we need to tell the UserService or the AuthProvider what type of password encoder we are using
      * and what type of authentication we are implementing
      * to do so we use this the AuthenticationProvider function below

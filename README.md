@@ -7,38 +7,37 @@ Base URL: http://localhost:8080/api
 ## Steps to run the back-end application:
 - Using Maven plugin in IntelliJ command line: mvn spring-boot:run
 - Using IntelliJ run button on the top right, make sure you select BookstoreBackendApplication java class is selected
-    - then click on the green play button
+  - then click on the green play button
 
 ## Authentication using Basic Authentication:
 - Basic Authentication is a method of securing HTTP requests through a special header: "Authorization: Basic 'credentials'"
 - Steps needed for Authentication:
-    - Run you spring boot application
-    - Wait till your application is ready
-    - Navigate to this URL: **http://localhost:8080/api/login**:
-    - It will prompt you with a login screen to enter username and password, but ince you didn't create a user in the DB, you cannot login, so:
-    - to create a user:
-    1. Open Postman
-    2. Create a new POST request and enter this URL **http://localhost:8080/api/register/user**
-    3. Click on the Body tab > Raw > JSON, and add preferred  username and password that are neither NULL nor BLANK, e.g:   
-       `{  
-       "username": "kata",  
-       "password": "backend"  
-       }`
-    5. Click on Send
-    6. You should get as response: the JSON object: userId, username and the hashed password
-    7. Now, to check the user in the DB:
-    8. Navigate in your browser to this URL: **http://localhost:8080/api/h2-console**
-    8. You will be prompted with the login screen again, but now you can add the credentials of the user you just created
-    9. After logging in, the h2 console will appear and request you to login, add the following fields:
-        10. JDBC URL: **jdbc:h2:mem:bookstoredb**
-        11. User Name: **sa**
-        12. Password: **super**
-        13. Click Connect
-        14. You can then click on the USERS table and check the user you just created!
+  - Run you spring boot application and wait till your application is ready
+  - Navigate to this URL: **http://localhost:8080/api/login**:
+  - It will prompt you with a login screen to enter username and password, but since you didn't create a user in the DB, you cannot login, so:
+  - **To create a user**:
+  1. Open Postman
+  2. Create a new POST request and enter this URL **http://localhost:8080/api/register/user**
+  3. Click on the Body tab > Raw > JSON, and add preferred  username and password that are neither NULL nor BLANK, e.g:   
+     `{  
+     "username": "kata",  
+     "password": "backend"  
+     }`
+  5. Click on Send
+  6. You should get as response back with status code 201 `CREATED` with the JSON object: userId, username and the hashed password
+  7. Now, to check the user in the DB:
+  8. Navigate in your browser to this URL: **http://localhost:8080/api/h2-console**
+  8. You will be prompted with the login screen again, but now you can add the credentials of the user you just created
+  9. After logging in, the h2 console will appear and request you to login, add the following fields:
+    10. JDBC URL: **jdbc:h2:mem:bookstoredb**
+    11. User Name: **sa**
+    12. Password: **super**
+    13. Click Connect
+    14. You can then click on the USERS table and check the user you just created!
 
 ##  Test API endpoints in Postman
-I will a POST example to demonstrate how to be authorized to test the API (the same thing applies to the other endpoints as well)
-First, run you spring boot application by selecting BookstoreBackendApplication and clicking the run button, and wait till your application loads
+I will use a POST example to demonstrate how to be authorized to test the API (the same thing applies to the other endpoints as well)
+First, run you spring boot application by selecting BookstoreBackendApplication and clicking the run button, and wait till your application loads.
 ### Steps to test POST request to create a book:
 1. Open Postman
 2. **Follow the Authentication steps mentioned earlier to create a user**
@@ -59,7 +58,7 @@ First, run you spring boot application by selecting BookstoreBackendApplication 
 14. You can then follow the same steps as above to see your book in the H2 console in the BOOKS table
 
 ### To test the following endpoints, follow the steps above by changing the HTTP method in Postman:
-"1" is taken here as an example for the book ID
+N.B: `1` is taken here as an example for the book ID
 ### GET all books: http://localhost:8080/api/books
 ### GET book by ID: http://localhost:8080/api/books/1
 ### DELETE book by ID: http://localhost:8080/api/books/1

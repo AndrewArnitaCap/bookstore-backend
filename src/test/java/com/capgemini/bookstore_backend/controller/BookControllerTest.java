@@ -1,6 +1,7 @@
 package com.capgemini.bookstore_backend.controller;
 
 import com.capgemini.bookstore_backend.dto.BookDto;
+import com.capgemini.bookstore_backend.repository.UserRepository;
 import com.capgemini.bookstore_backend.service.BookService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 
 @WebMvcTest(BookController.class)
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false) //! false: for the sake of testing my HTTP requests without authentication
 public class BookControllerTest {
     /**
      * to perform the API call I need a mockmvc
@@ -72,6 +73,7 @@ public class BookControllerTest {
     @Test
     void shouldCreateBookTest() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/books")
+//                        .header(HttpHeaders.AUTHORIZATION, "Basic " + Base64.getEncoder().encodeToString("kata:backend".getBytes()))
                         .content("{\"title\": \"Think and Grow Rich\", \"author\": \"Napoleon Hill\", \"price\": 89.0}")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
