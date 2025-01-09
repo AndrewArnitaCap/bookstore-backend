@@ -1,7 +1,6 @@
 package com.capgemini.bookstore_backend.controller;
 
 import com.capgemini.bookstore_backend.dto.BookDto;
-import com.capgemini.bookstore_backend.repository.UserRepository;
 import com.capgemini.bookstore_backend.service.BookService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

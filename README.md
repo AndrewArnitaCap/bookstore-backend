@@ -6,29 +6,29 @@ Base URL: http://localhost:8080/api
 
 ## Steps to run the back-end application:
 - Using Maven plugin in IntelliJ command line: mvn spring-boot:run
-- Using IntelliJ run button on the top right, make sure you select BookstoreBackendApplication java class is selected
+- Using IntelliJ run button on the top right, make sure you select BookstoreBackendApplication java class:
   - then click on the green play button
 
 ## Authentication using Basic Authentication:
 - Basic Authentication is a method of securing HTTP requests through a special header: "Authorization: Basic 'credentials'"
 - Steps needed for Authentication:
-  - Run you spring boot application and wait till your application is ready
+  - Run the spring boot application and wait till your application is ready
   - Navigate to this URL: **http://localhost:8080/api/login**:
   - It will prompt you with a login screen to enter username and password, but since you didn't create a user in the DB, you cannot login, so:
   - **To create a user**:
   1. Open Postman
   2. Create a new POST request and enter this URL **http://localhost:8080/api/register/user**
-  3. Click on the Body tab > Raw > JSON, and add preferred  username and password that are neither NULL nor BLANK, e.g:   
+  3. Click on the Body tab > Raw > JSON, and add preferred  username and password that should be neither NULL nor BLANK, e.g:   
      `{  
      "username": "kata",  
      "password": "backend"  
      }`
   5. Click on Send
-  6. You should get as response back with status code 201 `CREATED` with the JSON object: userId, username and the hashed password
-  7. Now, to check the user in the DB:
+  6. You should get a response back with status code 201 `CREATED` with the JSON object: userId, username and the hashed password
+  7. Now, to check the user in the H2 DB:
   8. Navigate in your browser to this URL: **http://localhost:8080/api/h2-console**
   8. You will be prompted with the login screen again, but now you can add the credentials of the user you just created
-  9. After logging in, the h2 console will appear and request you to login, add the following fields:
+  9. After logging in, the h2 console will appear and prompt you to login, add the following fields:
     10. JDBC URL: **jdbc:h2:mem:bookstoredb**
     11. User Name: **sa**
     12. Password: **super**
@@ -36,15 +36,16 @@ Base URL: http://localhost:8080/api
     14. You can then click on the USERS table and check the user you just created!
 
 ##  Test API endpoints in Postman
-I will use a POST example to demonstrate how to be authorized to test the API (the same thing applies to the other endpoints as well)
-First, run you spring boot application by selecting BookstoreBackendApplication and clicking the run button, and wait till your application loads.
+I will use a POST example to demonstrate how to be authorized to test the API (the same thing applies to the other endpoints as well)  
+
+First, run the spring boot application by selecting BookstoreBackendApplication and clicking the run button, and wait till your application loads.
 ### Steps to test POST request to create a book:
 1. Open Postman
-2. **Follow the Authentication steps mentioned earlier to create a user**
+2. **Follow the Authentication steps mentioned earlier to create a user before continuing**
 3. After the user has been created, add a new POST request
 4. Add this URL: **http://localhost:8080/api/books**
 5. Click on the Body tab > Raw > JSON
-6. Create a book JSON object and make sure the fields are neither NULL nor BLANK, e.g:
+6. Create a book JSON object and make sure the fields are neither NULL nor BLANK, e.g:  
    `{"title":  "Think and Grow Rich","author":  "Napoleon Hill",
    "price":  89.99
    }`
@@ -57,14 +58,15 @@ First, run you spring boot application by selecting BookstoreBackendApplication 
 13. You should get a 201 Created status with the JSON object: bookId, title, author, price
 14. You can then follow the same steps as above to see your book in the H2 console in the BOOKS table
 
-### To test the following endpoints, follow the steps above by changing the HTTP method in Postman:
+### To test the remaining endpoints, follow the steps above and change the HTTP method in Postman:
 N.B: `1` is taken here as an example for the book ID
 ### GET all books: http://localhost:8080/api/books
 ### GET book by ID: http://localhost:8080/api/books/1
 ### DELETE book by ID: http://localhost:8080/api/books/1
 
 ### PUT update by book ID : http://localhost:8080/api/books/1 :
-for the PUT you need to follow the same steps as for the POST, and change the properties as you prefer, e.g: you can change the title, author and price of a book by respecting the validation of not having NULL nor BLANK.
+for the PUT HTTP request you need to follow the same steps as for the one for POST, and change the properties as you prefer, e.g:  
+you can change the title, author and price of a book by respecting the validation of not having NULL nor BLANK.
 
 ## Dependencies Used
 - **Spring Boot DevTools Developer Tools:**  
@@ -99,3 +101,7 @@ for the PUT you need to follow the same steps as for the POST, and change the pr
   Solution was found here: https://stackoverflow.com/questions/63034956/mapstruct-no-property-named-packaging-exists-in-source-parameters/69649688#69649688
 - After adding Spring Security dependency to the project I had an issue with the H2-console not being loaded properly due to some headers and configurations for csrf, so this fixed it:  
   Solution I found: https://stackoverflow.com/questions/53395200/h2-console-is-not-showing-in-browser
+- CORS and CSRF related to security (everything works fine now):  
+https://www.kindsonthegenius.com/how-to-authenticate-from-react-to-spring-boot/
+- Running test cases for the BookController after adding Spring Security required me to remove the security filter chain (just for simplicity) otherwise the response I get is 403 (Forbidden):  
+https://stackoverflow.com/questions/47593537/disable-spring-security-config-class-for-webmvctest-in-spring-boot
